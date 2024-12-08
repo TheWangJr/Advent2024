@@ -25,20 +25,45 @@ def partone():
 
     return ans
 
+def is_true(test,rules):
+
+    for rule in rules.split('\n'):
+            
+            x,y = list(map(int,rule.split('|')))
+
+            if x in test and y in test and test.index(y) < test.index(x):
+
+                test.remove(x)
+
+                test.insert(test.index(y),x)
+                
+                return False
+    return True
+
 def parttwo():
     ans= 0
+
     for input in inputs.split('\n'):
+
         test = list(map(int,input.split(',')))
-        for rule in rules.split('\n'):
-            x,y = list(map(int,rule.split('|')))
-            if x in test and y in test and test.index(y) < test.index(x):
-                test.insert(test.index(x),y)
-                test.remove(y)
-                l = len(test)//2
-                ans += test[l]
+        
+        prev_test = None
+        
+        modified = False
+
+        while not is_true(test, rules):
+            if test == prev_test:  # If the test list hasn't changed, break the loop
+                print(f"Stuck in an infinite loop! Current test: {test}")
+                break
+            prev_test = test.copy()
+            modified =  True
+            
+        if modified:
+            middle = len(test)//2
+            ans += test[middle]
+        
     return ans
 
 if __name__ == "__main__":
-    print(partone())
     print(parttwo())
     
